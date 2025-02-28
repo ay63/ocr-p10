@@ -3,9 +3,11 @@ on:
   push:
     branches:
       - main 
+      - features
   pull_request:
     branches:
       - main
+      - features
 
 jobs:
   frontend:
@@ -15,7 +17,6 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2 
 
- 
     - name: Set up Node.js
       uses: actions/setup-node@v2
       with:
