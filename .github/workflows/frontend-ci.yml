@@ -30,7 +30,7 @@ jobs:
     - name: Run frontend with code coverage
       run: |
         cd front 
-        npm run test -- --no-watch --browsers=ChromeHeadless --code-coverage
+        npm run test --no-watch --browsers=ChromeHeadless --code-coverage
 
     - name: Upload frontend coverage reports 
       uses: actions/upload-artifact@v4
