@@ -1,0 +1,34 @@
+name: Backend CI 
+
+on:
+  push:
+    branches:
+      - main  
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest  
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2  
+
+ 
+    - name: Set up Java
+      uses: actions/setup-java@v2
+      with:
+        java-version: '11' 
+
+    - name: Build and test
+      run: |
+        cd back  
+        mvn clean install  
+
+    - name: Upload backend coverage reports
+      uses: actions/upload-artifact@v2
+      with:
+        name: backend-coverage
+        path: back/target/site/jacoco/index.html  
