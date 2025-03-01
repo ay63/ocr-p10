@@ -12,7 +12,7 @@ on:
       - main
       - features
 
-  build:
+  build-backend:
     runs-on: ubuntu-latest  
     steps:
     - name: Checkout repository
@@ -36,9 +36,9 @@ on:
         cd back
         mvn clean install
 
-  test:
+  test-backend:
     runs-on: ubuntu-latest
-    needs: build
+    needs: build-backend
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
@@ -54,9 +54,9 @@ on:
         name: backend-coverage
         path: back/target/site/jacoco/*
 
-  analyze:
+  analyze-backend:
     runs-on: ubuntu-latest
-    needs: test
+    needs: test-backend
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
