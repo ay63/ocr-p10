@@ -77,6 +77,7 @@ jobs:
           mvn -B verify sonar:sonar \
           -Dsonar.projectKey=ay63_ocr-p10 \
           -Dsonar.organization=ay63 \
+          -Dsonar.sources=src/main \
           -Dsonar.host.url=https://sonarcloud.io \
           -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml \
           -Dsonar.java.binaries=target/classes \
