@@ -75,5 +75,7 @@ jobs:
       - name: Run SonarQube Scanner
         run: |
           cd front
-          npx sonarqube-scanner
+          npx sonarqube-scanner \
+          -Dsonar.sources=front/src/app \
+          -Dsonar.javascript.lcov.reportPaths=front/coverage/bobapp \
 
