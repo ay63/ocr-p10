@@ -33,7 +33,6 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
 
       - name: Build backend
-        working-directory: ./ocr-p10
         run: |
           cd back
           mvn clean install
