@@ -33,6 +33,7 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
 
       - name: Build backend
+        working-directory: ./ocr-p10
         run: |
           cd back
           mvn clean install
@@ -72,4 +73,4 @@ jobs:
       - name: SonarQube Analysis for Backend
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar 
+        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=ay63_ocr-p10
