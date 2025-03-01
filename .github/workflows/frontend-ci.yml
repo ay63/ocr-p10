@@ -65,18 +65,12 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Run SonarQube analysis
-        uses: SonarSource/sonarqube-scan-action@v4
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v5
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-        with:
-          args: |
-            cd front
-            npx sonarqube-scanner \
-              -Dsonar.projectKey=bobapp \
-              -Dsonar.projectName='bobapp' \
-              -Dsonar.sources=src \
-              -Dsonar.tests=**/*.spec.js \
-              -Dsonar.javascript.lcov.reportPaths=front/coverage/bobapp/* \
-              -Dsonar.exclusions=**/node_modules/**,**/*.spec.ts
+
+      - name: Run SonarQube Scanner
+        run: |
+          cd front
+          npx sonarqube-scanner

@@ -75,11 +75,4 @@ jobs:
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
         run: |
           cd back
-          mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
-            -Dsonar.projectKey=bobapp \
-            -Dsonar.projectName='bobapp' \
-            -Dsonar.sources=src/main \
-            -Dsonar.tests=src/test \
-            -Dsonar.java.binaries=target/classes \
-            -Dsonar.java.test.binaries=target/test-classes \
-            -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
+          run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
