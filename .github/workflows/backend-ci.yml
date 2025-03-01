@@ -74,11 +74,9 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           cd back
-          mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
-            -Dsonar.projectKey=ay63_ocr-p10 \
-            -Dsonar.organization=ay63 \
-            -Dsonar.host.url=https://sonarcloud.io \
-            -Dsonar.sources=src/main \
-            -Dsonar.tests=src/test \  
-            -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml \
-            -Dsonar.java.binaries=target/classes
+          mvn -B verify sonar:sonar \
+          -Dsonar.projectKey=ay63_ocr-p10 \
+          -Dsonar.organization=ay63 \
+          -Dsonar.host.url=https://sonarcloud.io \
+          -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml \
+          -Dsonar.java.binaries=target/classes \
