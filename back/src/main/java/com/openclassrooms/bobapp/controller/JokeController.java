@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.openclassrooms.bobapp.service.JokeService;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController
 @RequestMapping("api/joke")
@@ -21,4 +23,10 @@ public class JokeController {
     public ResponseEntity<?> getRandomJokes() {
         return ResponseEntity.ok(this.jokeService.getRandomJoke());
     }
+
+    @GetMapping("test")
+    public String getMethodName(@RequestParam String param) {
+        return new String("test");
+    }
+    
 }
