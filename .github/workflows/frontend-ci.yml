@@ -62,24 +62,21 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Cache SonarQube packages
-        uses: actions/cache@v4
         with:
-          path: ~/.sonar/cache
-          key: ${{ runner.os }}-sonar
-          restore-keys: ${{ runner.os }}-sonar
+          fetch-depth: 0
 
-      - name: SonarQube Analysis for Frontend
+      - name: Run SonarQube analysis
+        uses: SonarSource/sonarqube-scan-action@v4
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-        run: |
-          cd front
-          npx sonarqube-scanner \
-            -Dsonar.projectKey=bobapp \
-            -Dsonar.projectName='bobapp' \
-            -Dsonar.sources=src \
-            -Dsonar.tests=**/*.spec.js \
-            -Dsonar.javascript.lcov.reportPaths=coverage/bobapp/lcov.info \
-            -Dsonar.exclusions=**/node_modules/**,**/*.spec.ts
+        with:
+          args: |
+            cd front
+            npx sonarqube-scanner \
+              -Dsonar.projectKey=bobapp \
+              -Dsonar.projectName='bobapp' \
+              -Dsonar.sources=src \
+              -Dsonar.tests=**/*.spec.js \
+              -Dsonar.javascript.lcov.reportPaths=front/coverage/bobapp/* \
+              -Dsonar.exclusions=**/node_modules/**,**/*.spec.ts
