@@ -28,5 +28,10 @@ public class JokeController {
     public String getMethodName(@RequestParam String param) {
         return new String("test");
     }
+
+    @GetMapping("test2")
+    public String test(@RequestParam String param) {
+        return new String("test");
+    }
     
 }
