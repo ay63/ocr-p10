@@ -77,6 +77,20 @@ jobs:
           name: frontend-coverage
           path: front/coverage/bobapp/*
 
+      
+      # Frontend analysis
+      - name: Run SonarQube Scanner
+        run: |
+          cd front
+          npx sonarqube-scanner \
+            -Dsonar.projectKey=ay63_ocr-p10 \
+            -Dsonar.organization=ay63 \
+            -Dsonar.host.url=https://sonarcloud.io \
+            -Dsonar.sources=src/app \
+            -Dsonar.javascript.lcov.reportPaths=coverage/bobapp/lcov.info
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
       # Backend analysis
       - name: Set up Java
         uses: actions/setup-java@v4
@@ -96,16 +110,3 @@ jobs:
           -Dsonar.host.url=https://sonarcloud.io \
           -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml \
           -Dsonar.java.binaries=target/classes \
-
-      # Frontend analysis
-      - name: Run SonarQube Scanner
-        run: |
-          cd front
-          npx sonarqube-scanner \
-            -Dsonar.projectKey=ay63_ocr-p10 \
-            -Dsonar.organization=ay63 \
-            -Dsonar.host.url=https://sonarcloud.io \
-            -Dsonar.sources=src/app \
-            -Dsonar.javascript.lcov.reportPaths=coverage/bobapp/lcov.info
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
