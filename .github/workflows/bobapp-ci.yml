@@ -5,9 +5,8 @@ on:
     branches:
       - main
       - features
-      - "back/**" 
-      - "front/**"
-      - "fullstack/**" 
+      - "back/**"
+      - "fullstack/**"
   pull_request:
     branches:
       - main
@@ -22,6 +21,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
 
       # Backend build
       - name: Set up Java
@@ -77,28 +77,12 @@ jobs:
           name: frontend-coverage
           path: front/coverage/bobapp/*
 
-      
-      # Frontend analysis
-      - name: Run SonarQube Scanner
-        run: |
-          cd front
-          npx sonarqube-scanner \
-            -Dsonar.projectKey=ay63_ocr-p10 \
-            -Dsonar.organization=ay63 \
-            -Dsonar.host.url=https://sonarcloud.io \
-            -Dsonar.sources=src/app \
-            -Dsonar.javascript.lcov.reportPaths=coverage/bobapp/lcov.info
-            -Dsonar.projectBaseDir=../front
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
       # Backend analysis
-      - name: Set up Java
+      - name: Set up Java for SonarQube
         uses: actions/setup-java@v4
         with:
           java-version: "17"
           distribution: "temurin"
-
       - name: SonarQube Analysis for Backend
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -111,4 +95,16 @@ jobs:
           -Dsonar.host.url=https://sonarcloud.io \
           -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml \
           -Dsonar.java.binaries=target/classes \
-          -Dsonar.projectBaseDir=../back
+
+      # Frontend analysis
+      - name: Run SonarQube Scanner
+        run: |
+          cd front
+          npx sonarqube-scanner \
+            -Dsonar.projectKey=ay63_ocr-p10 \
+            -Dsonar.organization=ay63 \
+            -Dsonar.host.url=https://sonarcloud.io \
+            -Dsonar.sources=src/app \
+            -Dsonar.javascript.lcov.reportPaths=coverage/bobapp/lcov.info
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
