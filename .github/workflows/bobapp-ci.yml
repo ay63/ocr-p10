@@ -1,0 +1,105 @@
+name: Bobapp CI
+
+on:
+  push:
+    branches:
+      - main
+      - features
+      - "back/**"
+      - "fullstack/**"
+  pull_request:
+    branches:
+      - main
+      - features
+
+jobs:
+  bobapp-ci:
+    name: Build, Test and analyze backend and frontend code base
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+
+      # Backend build
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: "11"
+          distribution: "temurin"
+
+      - name: Cache Maven packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      - name: Build backend
+        run: |
+          cd back
+          mvn clean install
+
+      # Frontend build
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install dependencies
+        run: |
+          cd front  
+          npm install
+
+      # Backend test
+      - name: Run backend tests
+        run: |
+          cd back
+          mvn test
+
+      - name: Upload backend coverage reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-coverage
+          path: back/target/site/jacoco/*
+
+      # frontend test
+      - name: Run frontend with code coverage
+        run: |
+          cd front 
+          npm run test -- --no-watch --browsers=ChromeHeadless --code-coverage
+
+      - name: Upload frontend coverage reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-coverage
+          path: front/coverage/bobapp/*
+
+      # Backend analysis
+      - name: SonarQube Analysis for Backend
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          cd back
+          mvn -B verify sonar:sonar \
+          -Dsonar.projectKey=ay63_ocr-p10 \
+          -Dsonar.organization=ay63 \
+          -Dsonar.sources=src/main \
+          -Dsonar.host.url=https://sonarcloud.io \
+          -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml \
+          -Dsonar.java.binaries=target/classes \
+
+      # Frontend analysis
+      - name: Run SonarQube Scanner
+        run: |
+          cd front
+          npx sonarqube-scanner \
+            -Dsonar.projectKey=ay63_ocr-p10 \
+            -Dsonar.organization=ay63 \
+            -Dsonar.host.url=https://sonarcloud.io \
+            -Dsonar.sources=src/app \
+            -Dsonar.javascript.lcov.reportPaths=coverage/bobapp/lcov.info
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
