@@ -22,7 +22,6 @@ jobs:
         with:
           fetch-depth: 0
 
-
       # Backend build
       - name: Set up Java
         uses: actions/setup-java@v4
@@ -77,36 +76,9 @@ jobs:
           name: frontend-coverage
           path: front/coverage/bobapp/*
 
-      # Backend analysis
-      - name: Set up Java for SonarQube
-        uses: actions/setup-java@v4
-        with:
-          java-version: "17"
-          distribution: "temurin"
-      - name: SonarQube Analysis for Backend
+      # SonarCloud Analysis 
+      - name: Run SonarQube Scanner for entire project
+        uses: SonarSource/sonarcloud-github-action@master
         env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: |
-          cd back
-          mvn -B verify sonar:sonar \
-          -Dsonar.projectKey=ay63_ocr-p10 \
-          -Dsonar.organization=ay63 \
-          -Dsonar.sources=src/main \
-          -Dsonar.host.url=https://sonarcloud.io \
-          -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml \
-          -Dsonar.java.binaries=target/classes \
-          -Dsonar.projectBaseDir=../ 
-
-      # Frontend analysis
-      - name: Run SonarQube Scanner
-        run: |
-          cd front
-          npx sonarqube-scanner \
-            -Dsonar.projectKey=ay63_ocr-p10 \
-            -Dsonar.organization=ay63 \
-            -Dsonar.host.url=https://sonarcloud.io \
-            -Dsonar.sources=src/app \
-            -Dsonar.javascript.lcov.reportPaths=coverage/bobapp/lcov.info \
-            -Dsonar.projectBaseDir=../
-        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
