@@ -22,7 +22,7 @@ public class JokeController {
         return ResponseEntity.ok(this.jokeService.getRandomJoke());
     }
 
-    @GetMapping()
+    @GetMapping("/fake")
     public ResponseEntity<?> getFakeEndpoint() {
         return ResponseEntity.ok("This is a fake endpoint");
     }
