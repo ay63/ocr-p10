@@ -118,7 +118,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: backend-coverage
-          path: back/target/site/jacoco/jacoco.xml
+          path: back/target/site/jacoco/
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -139,8 +139,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: frontend-coverage
-          path: front/coverage/bobapp/icov.info
-
+          path: front/coverage/bobapp/*
+          
   sonarcloud:
     name: SonarCloud Analysis
     needs: [test]
