@@ -5,16 +5,18 @@ on:
     branches:
       - main
       - features
-      - "back/**"
-      - "fullstack/**"
+      - "feat/**"
+      - "fix/**"
+      - "hotfix/**"
+      - "refactor/**"  
   pull_request:
     branches:
       - main
       - features
 
 jobs:
-  bobapp-ci:
-    name: Build, Test and analyze backend and frontend code base
+  build:
+    name: Build backend and frontend
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -52,7 +54,11 @@ jobs:
           cd front  
           npm install
 
-      # Backend test
+  test:
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      # Backend tests
       - name: Run backend tests
         run: |
           cd back
@@ -64,7 +70,7 @@ jobs:
           name: backend-coverage
           path: back/target/site/jacoco/*
 
-      # frontend test
+      # Frontend tests
       - name: Run frontend with code coverage
         run: |
           cd front 
@@ -76,7 +82,11 @@ jobs:
           name: frontend-coverage
           path: front/coverage/bobapp/*
 
-      # SonarCloud Analysis 
+  sonarcloud:
+    needs: [build, test]
+    runs-on: ubuntu-latest
+    steps:
+      # SonarCloud Analysis
       - name: Run SonarQube Scanner for entire project
         uses: SonarSource/sonarqube-scan-action@v5
         env:
@@ -84,20 +94,23 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: https://sonarcloud.io
 
-    
-      # Docker build and push
+  docker:
+    name: Build and push Docker images
+    needs: [build, test, sonarcloud]
+    runs-on: ubuntu-latest
+    steps:
       - name: DockerHub Login
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-      
+
       - name: Build and push Backend Docker image
         run: |
           cd back
           docker build -t ${{ secrets.DOCKER_USERNAME }}/backend:latest .
           docker push ${{ secrets.DOCKER_USERNAME }}/backend:latest
-      
+
       - name: Build and push Frontend Docker image
         run: |
           cd front
