@@ -69,6 +69,7 @@ jobs:
 
   test:
     needs: [build]
+    name: Run backend and frontend tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -115,13 +116,11 @@ jobs:
           name: backend-coverage
           path: back/target/site/jacoco/jacoco.xml
 
-      # Setup Node pour les tests frontend
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "22"
-          
-      # Install frontend dependencies
+
       - name: Install dependencies
         run: |
           cd front  
@@ -140,6 +139,7 @@ jobs:
           path: front/coverage/bobapp/icov.info
 
   sonarcloud:
+    name: SonarCloud Analysis
     needs: [test]
     runs-on: ubuntu-latest
     steps:
@@ -148,7 +148,6 @@ jobs:
         with:
           fetch-depth: 0
           
-
       - name: Download backend build artifacts
         uses: actions/download-artifact@v4
         with:
@@ -173,7 +172,7 @@ jobs:
           SONAR_HOST_URL: https://sonarcloud.io
 
   docker:
-    name: Build and push Docker images
+    name: Build and push
     needs: [sonarcloud]
     runs-on: ubuntu-latest
     steps:
