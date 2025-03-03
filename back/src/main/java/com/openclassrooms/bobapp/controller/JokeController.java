@@ -21,4 +21,9 @@ public class JokeController {
     public ResponseEntity<?> getRandomJokes() {
         return ResponseEntity.ok(this.jokeService.getRandomJoke());
     }
+
+    @GetMapping()
+    public ResponseEntity<?> getFakeEndpoint() {
+        return ResponseEntity.ok("This is a fake endpoint");
+    }
 }
