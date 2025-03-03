@@ -24,7 +24,7 @@ public class JokeController {
 
     @GetMapping()
     public ResponseEntity<?> getTest() {
-        return ResponseEntity.ok("Hello World");
+        return ResponseEntity.ok("Hello Test rules");
     }
 
 }
