@@ -22,4 +22,9 @@ public class JokeController {
         return ResponseEntity.ok(this.jokeService.getRandomJoke());
     }
 
+    @GetMapping()
+    public ResponseEntity<?> getTest() {
+        return ResponseEntity.ok("Hello World");
+    }
+
 }
