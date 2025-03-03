@@ -16,7 +16,7 @@ on:
 
 jobs:
   backend:
-    name: Backend build & test
+    name: Backend build and test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -57,7 +57,7 @@ jobs:
           retention-days: 1
 
   frontend:
-    name: Frontend build & test
+    name: Frontend build and test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
