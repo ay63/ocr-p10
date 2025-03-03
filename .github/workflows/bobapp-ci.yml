@@ -58,6 +58,26 @@ jobs:
     needs: [build]
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          
+      # Setup Java for backend tests
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: "11"
+          distribution: "temurin"
+          
+      # Cache Maven packages
+      - name: Cache Maven packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+      
       # Backend tests
       - name: Run backend tests
         run: |
@@ -70,6 +90,18 @@ jobs:
           name: backend-coverage
           path: back/target/site/jacoco/*
 
+      # Setup Node for frontend tests
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          
+      # Install frontend dependencies
+      - name: Install dependencies
+        run: |
+          cd front  
+          npm install
+          
       # Frontend tests
       - name: Run frontend with code coverage
         run: |
@@ -83,9 +115,18 @@ jobs:
           path: front/coverage/bobapp/*
 
   sonarcloud:
-    needs: [build, test]
+    needs: [test]
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          
+      # Download coverage reports
+      - name: Download all workflow run artifacts
+        uses: actions/download-artifact@v4
+          
       # SonarCloud Analysis
       - name: Run SonarQube Scanner for entire project
         uses: SonarSource/sonarqube-scan-action@v5
@@ -96,9 +137,14 @@ jobs:
 
   docker:
     name: Build and push Docker images
-    needs: [build, test, sonarcloud]
+    needs: [sonarcloud]
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          
       - name: DockerHub Login
         uses: docker/login-action@v3
         with:
