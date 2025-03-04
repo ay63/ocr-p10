@@ -12,14 +12,14 @@ on:
       - features
 
 jobs:
-  backend:
-    name: Backend build and test
+  backend-test:
+    name: Backend test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 
+          fetch-depth: 0
 
       - name: Set up Java
         uses: actions/setup-java@v4
@@ -34,7 +34,29 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-maven-
 
-      - name: Build and test backend
+      - name: Run test
+        run: |
+          cd back
+          mvn clean test
+
+      - name: Upload backend coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-coverage
+          path: back/target/site/jacoco/
+          retention-days: 1
+
+  backend-build:
+    needs: [backend-test]
+    name: Backend build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Build backend
         run: |
           cd back
           mvn clean package
@@ -46,28 +68,55 @@ jobs:
           path: back/target/
           retention-days: 1
 
-      - name: Upload backend coverage
-        uses: actions/upload-artifact@v4
-        with:
-          name: backend-coverage
-          path: back/target/site/jacoco/
-          retention-days: 1
-
-  frontend:
-    name: Frontend build and test
+  frontend-test:
+    name: Frontend test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  
+          fetch-depth: 0
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "22"
-          cache: 'npm'
-          cache-dependency-path: 'front/package-lock.json'
+          cache: "npm"
+          cache-dependency-path: "front/package-lock.json"
+
+      - name: Install dependencies
+        run: |
+          cd front
+          npm ci
+
+      - name: Run frontend tests with coverage
+        run: |
+          cd front
+          npm run test -- --no-watch --browsers=ChromeHeadless --code-coverage
+
+      - name: Upload frontend coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-coverage
+          path: front/coverage/bobapp
+          retention-days: 1
+
+  frontend-build:
+    needs: [frontend-test]
+    name: Frontend build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+          cache-dependency-path: "front/package-lock.json"
 
       - name: Install dependencies
         run: |
@@ -79,11 +128,6 @@ jobs:
           cd front
           npm run build
 
-      - name: Run frontend tests with coverage
-        run: |
-          cd front
-          npm run test -- --no-watch --browsers=ChromeHeadless --code-coverage
-
       - name: Upload frontend build artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -91,16 +135,9 @@ jobs:
           path: front/dist
           retention-days: 1
 
-      - name: Upload frontend coverage
-        uses: actions/upload-artifact@v4
-        with:
-          name: frontend-coverage
-          path: front/coverage/bobapp
-          retention-days: 1
-
   sonarcloud:
     name: SonarCloud Analysis
-    needs: [backend, frontend]
+    needs: [backend-test, backend-build, frontend-test, frontend-build]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -150,6 +187,7 @@ jobs:
     name: Build and push Docker images
     needs: [sonarcloud]
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
