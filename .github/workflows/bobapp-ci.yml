@@ -1,16 +1,13 @@
-name: Bobapp CI
+name: Bobapp app CI
 
 on:
   push:
     branches:
-      - main
       - features
-
   pull_request:
     branches:
-      - main
       - features
-
+      - main
 jobs:
   backend-test:
     name: Backend test
@@ -184,52 +181,3 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: https://sonarcloud.io
-
-  docker:
-    name: Build and push Docker images
-    needs: [sonarcloud]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
-
-      - name: Download backend artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: backend-build
-          path: back/target
-
-      - name: Download frontend artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: frontend-build
-          path: front/dist
-
-      - name: DockerHub Login
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Build and push Backend Docker image
-        uses: docker/build-push-action@v6
-        with:
-          context: ./back
-          push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/backend:latest
-          cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/backend:buildcache
-          cache-to: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/backend:buildcache,mode=max
-
-      - name: Build and push Frontend Docker image
-        uses: docker/build-push-action@v6
-        with:
-          context: ./front
-          push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/frontend:latest
-          cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/frontend:buildcache
-          cache-to: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/frontend:buildcache,mode=max
