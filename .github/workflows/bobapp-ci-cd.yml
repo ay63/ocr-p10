@@ -133,7 +133,7 @@ jobs:
 
   sonarcloud:
     name: SonarCloud Analysis
-    needs: [backend, frontend]
+    needs: [backend-test,backend-build, frontend-test, backend-build]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
