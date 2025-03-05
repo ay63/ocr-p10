@@ -180,10 +180,10 @@ jobs:
         uses: SonarSource/sonarqube-scan-action@v5
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_LOCAL }}
-          # SONAR_HOST_URL: https://9263-92-132-16-173.ngrok-free.app 
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: https://sonarcloud.io
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_LOCAL }}
+          SONAR_HOST_URL: https://9263-92-132-16-173.ngrok-free.app 
+          # SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          # SONAR_HOST_URL: https://sonarcloud.io
 
   docker:
     name: Build and push Docker images
