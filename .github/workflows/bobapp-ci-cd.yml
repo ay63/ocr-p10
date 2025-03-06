@@ -176,12 +176,23 @@ jobs:
           java-version: "17"
           distribution: "temurin"
 
-      - name: Run SonarQube Scanner
+      - name: Run SonarQube Scanner  backend
         uses: SonarSource/sonarqube-scan-action@v5
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_BACK }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL_CLOUD }}
+        with:
+          projectBaseDir: back
+
+      - name: Run SonarQube Scanner front
+        uses: SonarSource/sonarqube-scan-action@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_FRONT }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL_CLOUD }}
+        with:
+          projectBaseDir: front
 
   docker:
     name: Build and push Docker images
