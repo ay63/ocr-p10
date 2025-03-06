@@ -176,31 +176,12 @@ jobs:
           java-version: "17"
           distribution: "temurin"
 
-      - name: Run SonarCloud for Backend
-        run: |
-          cd back
-          mvn clean verify sonar:sonar \
-            -Dsonar.projectKey=ay63_ocr-p10 \
-            -Dsonar.organization=ay63 \
-            -Dsonar.host.url=https://sonarcloud.io \
-            -Dsonar.token=${{ secrets.SONAR_TOKEN }} \
-            -Dsonar.sources=src/main/java \
-            -Dsonar.tests=src/test/java \
-            -Dsonar.java.binaries=target/classes \
-            -Dsonar.junit.reportPaths=target/surefire-reports \
-            -Dsonar.jacoco.reportPaths=target/site/jacoco/jacoco.xml
-
-
-      - name: Run SonarCloud for Frontend
-        run: |
-          cd front
-          sonar-scanner \
-            -Dsonar.projectKey=ay63_ocr-p10  \
-            -Dsonar.organization=ay63 \
-            -Dsonar.sources=front/src \
-            -Dsonar.typescript.lcov.reportPaths=front/coverage/bobapp/lcov.info \
-            -Dsonar.host.url=https://sonarcloud.io \
-            -Dsonar.token=${{ secrets.SONAR_TOKEN }}
+      - name: Run SonarQube Scanner
+        uses: SonarSource/sonarqube-scan-action@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL_CLOUD }}
 
   docker:
     name: Build and push Docker images
