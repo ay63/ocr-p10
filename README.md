@@ -41,4 +41,4 @@ Launch the tests:
 
 Build the container:
 
-> docker-composer up --build -p
+> docker-compose up -d
