@@ -18,15 +18,6 @@ Launch Front-end:
 
 > npm run start;
 
-### Docker
-
-Build the container:
-
-> docker build -t bobapp-front .  
-
-Start the container:
-
-> docker run -p 8080:8080 --name bobapp-front -d bobapp-front
 
 ## Back-end
 
@@ -46,12 +37,8 @@ Launch the tests:
 
 > mvn clean install
 
-### Docker
+### Docker compose
 
 Build the container:
 
-> docker build -t bobapp-back .  
-
-Start the container:
-
-> docker run -p 8080:8080 --name bobapp-back -d bobapp-back 
+> docker-composer up --build -p
