@@ -39,6 +39,6 @@ Launch the tests:
 
 ### Docker compose
 
-Build the container:
+Run the container:
 
 > docker-compose up -d
