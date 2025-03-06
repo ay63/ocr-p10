@@ -5,7 +5,7 @@ on:
     branches:
       - main
       - features
-
+      - "feat/*"
   pull_request:
     branches:
       - main
@@ -14,12 +14,12 @@ on:
 jobs:
   backend-test:
     name: Backend test
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 1
+          fetch-depth: 0
 
       - name: Set up Java
         uses: actions/setup-java@v4
@@ -49,12 +49,12 @@ jobs:
   backend-build:
     needs: [backend-test]
     name: Backend build
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 1
+          fetch-depth: 0
 
       - name: Build backend
         run: |
@@ -70,12 +70,12 @@ jobs:
 
   frontend-test:
     name: Frontend test
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 1
+          fetch-depth: 0
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -104,12 +104,12 @@ jobs:
   frontend-build:
     needs: [frontend-test]
     name: Frontend build
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 1
+          fetch-depth: 0
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -138,12 +138,12 @@ jobs:
   sonarcloud:
     name: SonarCloud Analysis
     needs: [backend-test, backend-build, frontend-test, frontend-build]
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 1
+          fetch-depth: 0
 
       - name: Download backend coverage
         uses: actions/download-artifact@v4
@@ -180,13 +180,13 @@ jobs:
         uses: SonarSource/sonarqube-scan-action@v5
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_LOCAL }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL_LOCAL }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL_CLOUD }}
 
   docker:
     name: Build and push Docker images
     needs: [sonarcloud]
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     steps:
       - name: Checkout repository
