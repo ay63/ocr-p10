@@ -5,11 +5,9 @@ on:
     branches:
       - main
       - features
-      - "feat/*"
   pull_request:
     branches:
       - main
-      - features
 
 jobs:
   backend-test:
