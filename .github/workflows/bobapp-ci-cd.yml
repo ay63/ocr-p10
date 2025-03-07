@@ -175,34 +175,36 @@ jobs:
         with:
           java-version: "17"
           distribution: "temurin"
-      
+
       - name: Cache SonarQube packages
         uses: actions/cache@v4
         with:
           path: ~/.sonar/cache
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
+
       - name: Cache Maven packages
         uses: actions/cache@v4
         with:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
-      - name: Build and analyze
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+      - name: Run SonarQube Scanner back
         run: |
           cd back
           mvn -B verify sonar:sonar \
           -Dsonar.projectKey=ay63_ocr-p10-back \
           -Dsonar.organization=ay63 \
-          -Dsonar.host.url=${{ secrets.SONAR_HOST_URL_CLOUD }} \
-          -Dsonar.token=${{ secrets.SONAR_TOKEN_BACK }} \
           -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml \
           -Dsonar.java.binaries=target/classes \
           -Dsonar.sources=src/main \
-          -Dsonar.sourceEncoding=UTF-8 
-        
+          -Dsonar.sourceEncoding=UTF-8
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_BACK }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL_CLOUD }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Run SonarQube Scanner front
         uses: SonarSource/sonarqube-scan-action@v5
         env:
