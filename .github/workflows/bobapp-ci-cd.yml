@@ -11,7 +11,7 @@ on:
 
 jobs:
   test-build:
-    name: Backend Build and Test
+    name: Backend and Frontend build and test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
