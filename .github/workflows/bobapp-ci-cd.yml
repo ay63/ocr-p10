@@ -143,7 +143,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 1
+          fetch-depth: 0
 
       - name: Download backend coverage
         uses: actions/download-artifact@v4
@@ -176,14 +176,34 @@ jobs:
           java-version: "17"
           distribution: "temurin"
 
-      - name: Run SonarQube Scanner  backend
-        uses: SonarSource/sonarqube-scan-action@v5
+      - name: Cache SonarQube packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+
+      - name: Cache Maven packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      - name: Run SonarQube Scanner back
+        run: |
+          cd back
+          mvn sonar:sonar \
+          -Dsonar.projectKey=ay63_ocr-p10-back \
+          -Dsonar.organization=ay63 \
+          -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml \
+          -Dsonar.java.binaries=target/classes \
+          -Dsonar.sources=src/main \
+          -Dsonar.sourceEncoding=UTF-8
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_BACK }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL_CLOUD }}
-        with:
-          projectBaseDir: back
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Run SonarQube Scanner front
         uses: SonarSource/sonarqube-scan-action@v5
