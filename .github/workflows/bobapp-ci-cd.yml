@@ -193,7 +193,7 @@ jobs:
       - name: Run SonarQube Scanner back
         run: |
           cd back
-          mvn -B verify sonar:sonar \
+          mvn sonar:sonar \
           -Dsonar.projectKey=ay63_ocr-p10-back \
           -Dsonar.organization=ay63 \
           -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml \
