@@ -143,7 +143,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 1
+          fetch-depth: 0
 
       - name: Download backend coverage
         uses: actions/download-artifact@v4
@@ -179,15 +179,7 @@ jobs:
       - name: Run SonarQube Scanner  backend
         run: |
           cd back
-          mvn  sonar:sonar \
-            -Dsonar.projectKey=ay63_ocr-p10-back \
-            -Dsonar.organization=ay63 \
-            -Dsonar.host.url=${{ secrets.SONAR_HOST_URL_CLOUD }} \
-            -Dsonar.login=${{ secrets.SONAR_TOKEN_BACK }} \
-            -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml \
-            -Dsonar.java.binaries=target/classes \ 
-            -Dsonar.sources=src/main \ 
-            -Dsonar.sourceEncoding=UTF-8
+          mvn sonar:sonar 
         
       - name: Run SonarQube Scanner front
         uses: SonarSource/sonarqube-scan-action@v5
