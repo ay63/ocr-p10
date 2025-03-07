@@ -192,14 +192,7 @@ jobs:
 
       - name: Run SonarQube Scanner back
         run: |
-          cd back
-          mvn sonar:sonar \
-          -Dsonar.projectKey=ay63_ocr-p10-back \
-          -Dsonar.organization=ay63 \
-          -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml \
-          -Dsonar.java.binaries=target/classes \
-          -Dsonar.sources=src/main \
-          -Dsonar.sourceEncoding=UTF-8
+          mvn sonar:sonar 
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_BACK }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL_CLOUD }}
