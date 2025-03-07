@@ -183,7 +183,7 @@ jobs:
           -Dsonar.projectKey=ay63_ocr-p10-back \
           -Dsonar.organization=ay63 \
           -Dsonar.host.url=${{ secrets.SONAR_HOST_URL_CLOUD }} \
-          -Dsonar.login=${{ secrets.SONAR_TOKEN_BACK }} \
+          -Dsonar.token=${{ secrets.SONAR_TOKEN_BACK }} \
           -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml \
           -Dsonar.java.binaries=target/classes \
           -Dsonar.sources=src/main \
