@@ -33,7 +33,7 @@ jobs:
           restore-keys: ${{ runner.os }}-maven
 
       - name: Run backend tests and build backend
-        run: mvn clean package -DskipTests
+        run: mvn clean package
 
       - name: Upload backend coverage
         uses: actions/upload-artifact@v4
