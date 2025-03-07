@@ -10,14 +10,12 @@
 		<relativePath />
 	</parent>
 	<groupId>com.openclassrooms</groupId>
-	<artifactId>bobapp</artifactId>
+	<artifactId>ay63_ocr-p10-back</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>bobapp</name>
+	<name>ay63_ocr-p10-back</name>
 	<description>L'application de joke par excellence !</description>
 	<properties>
 		<java.version>11</java.version>
-		<sonar.organization>ay63</sonar.organization>
-		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 	</properties>
 	<dependencies>
 		<dependency>
