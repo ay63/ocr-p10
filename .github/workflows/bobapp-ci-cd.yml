@@ -179,7 +179,7 @@ jobs:
       - name: Run SonarQube Scanner  backend
         run: |
           cd back
-          mvn -B org.sonarsource.scanner.maven:sonar-maven-plugin:sonar 
+          mvn -B org.sonarsource.scanner.maven:sonar-maven-plugin:5.0.0.4389:sonar
 
         
       - name: Run SonarQube Scanner front
