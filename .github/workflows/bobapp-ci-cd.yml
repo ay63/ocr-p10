@@ -10,8 +10,8 @@ on:
       - main
 
 jobs:
-  backend-test:
-    name: Backend test
+  test-build:
+    name: Backend and Frontend build and test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -30,12 +30,12 @@ jobs:
         with:
           path: ~/.m2
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-maven-
+          restore-keys: ${{ runner.os }}-maven
 
-      - name: Run test
+      - name: Run backend tests and Build backend
         run: |
           cd back
-          mvn clean test
+          mvn clean package
 
       - name: Upload backend coverage
         uses: actions/upload-artifact@v4
@@ -44,21 +44,6 @@ jobs:
           path: back/target/site/jacoco/
           retention-days: 1
 
-  backend-build:
-    needs: [backend-test]
-    name: Backend build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
-
-      - name: Build backend
-        run: |
-          cd back
-          mvn clean package -DskipTests
-
       - name: Upload backend build artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -66,15 +51,6 @@ jobs:
           path: back/target/
           retention-days: 1
 
-  frontend-test:
-    name: Frontend test
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
-
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
@@ -87,10 +63,15 @@ jobs:
           cd front
           npm ci
 
-      - name: Run frontend tests with coverage
+      - name: Run frontend tests
         run: |
-          cd front
+          cd front 
           npm run test -- --no-watch --browsers=ChromeHeadless --code-coverage
+
+      - name: Build frontend
+        run: |
+          cd front 
+          npm run build
 
       - name: Upload frontend coverage
         uses: actions/upload-artifact@v4
@@ -98,33 +79,6 @@ jobs:
           name: frontend-coverage
           path: front/coverage/bobapp
           retention-days: 1
-
-  frontend-build:
-    needs: [frontend-test]
-    name: Frontend build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-          cache: "npm"
-          cache-dependency-path: "front/package-lock.json"
-
-      - name: Install dependencies
-        run: |
-          cd front
-          npm ci
-
-      - name: Build frontend
-        run: |
-          cd front
-          npm run build
 
       - name: Upload frontend build artifacts
         uses: actions/upload-artifact@v4
@@ -135,7 +89,7 @@ jobs:
 
   sonarcloud:
     name: SonarCloud Analysis
-    needs: [backend-test, backend-build, frontend-test, frontend-build]
+    needs: [test-build]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
