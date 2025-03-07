@@ -10,7 +10,7 @@ on:
       - main
 
 jobs:
-  backend:
+  test-build:
     name: Backend Build and Test
     runs-on: ubuntu-latest
     steps:
@@ -50,16 +50,7 @@ jobs:
           name: backend-build
           path: back/target/
           retention-days: 1
-
-  frontend:
-    name: Frontend Build and Test
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
-
+    
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
