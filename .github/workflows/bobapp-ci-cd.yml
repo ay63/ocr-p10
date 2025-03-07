@@ -1,4 +1,4 @@
-name: Bobapp CI
+name: Bobapp workflow
 
 on:
   push:
