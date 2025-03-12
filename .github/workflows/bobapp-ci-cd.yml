@@ -145,7 +145,7 @@ jobs:
       - name: Run SonarQube Scanner back
         run: |
           cd back
-          mvn sonar:sonar 
+          mvn sonar:sonar -Dsonar.scanner.properties-file=./sonar-project.properties
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_BACK }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL_CLOUD }}
