@@ -21,7 +21,6 @@ public class JokeController {
 
     @GetMapping()
     public ResponseEntity<?> getRandomJokes() {
-        //@todo test
         return ResponseEntity.ok(this.jokeService.getRandomJoke());
     }
 
