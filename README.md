@@ -5,6 +5,7 @@ Clone project:
 > git clone XXXXX
 
 ### Docker compose
+Go to the root of the project where you can find the docker-compose.yml file
 
 Build container: 
 
