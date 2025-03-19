@@ -7,6 +7,8 @@ Clone project:
 ### Docker compose
 Go to the root of the project where you can find the docker-compose.yml file
 
+Go to the root of the project where I find the docker-compose.yml file
+
 Build container: 
 
 > docker-compose build

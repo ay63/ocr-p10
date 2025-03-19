@@ -7,7 +7,6 @@ on:
   pull_request:
     branches:
       - main
-      - features
 
 jobs:
   test-build:
@@ -168,7 +167,6 @@ jobs:
     name: Build and push Docker images
     needs: [sonarcloud]
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
